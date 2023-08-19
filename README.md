@@ -1,1 +1,1 @@
-# nn-framework
+# Neureal network framework
