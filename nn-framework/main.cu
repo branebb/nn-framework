@@ -1,14 +1,12 @@
 #include <iostream>
 
-__global__ void kernelWithPrint() {
-    printf("Thread %d in block %d\n", threadIdx.x, blockIdx.x);
-}
+__global__ void myKernelTest(void){
 
+}
 
 int main()
 {
-    std::cout << "Radi" << std::endl;
-    kernelWithPrint<<<1, 1>>>();
-
+    myKernelTest<<<1, 1>>>();
+    printf("Radi bkt mazo\n");
     return 0;
 }
