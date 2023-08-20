@@ -15,18 +15,22 @@ include_directories(
     /
 )
 
-set(sources
-    nn-framework/main.cu
-)
 add_executable(${CMAKE_PROJECT_NAME} ${sources})
 
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+    nn-framework/main.cu
+    nn-framework/utils/error_check_cuda.cu
+)
+
 target_compile_options(${CMAKE_PROJECT_NAME}
+    PRIVATE $<$<COMPILE_LANGUAGE:CXX>: >
     PRIVATE $<$<COMPILE_LANGUAGE:CUDA>: -Xcudafe --diag_suppress=esa_on_defaulted_function_ignored --expt-relaxed-constexpr>
 )
 
 set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CUDA_SEPARABLE_COMPILATION ON)
 set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CUDA_ARCHITECTURES OFF)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_options(add PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-G>)
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE _DEBUG)
+    target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-G>)
 endif()
