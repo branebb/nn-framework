@@ -13,7 +13,7 @@ __global__ void myKernelTest(void)
 {
     int idx = threadIdx.x;
 
-    printf("Thread ID: %d\n", idx);
+    // printf("Thread ID: %d\n", idx);
 
     return;
 }
