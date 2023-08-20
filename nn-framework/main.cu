@@ -11,11 +11,11 @@
 
 __global__ void myKernelTest(void)
 {
-    int idx = threadIdx.x;
+    // int idx = threadIdx.x;
 
     // printf("Thread ID: %d\n", idx);
 
-    return;
+    // return;
 }
 
 int main()
