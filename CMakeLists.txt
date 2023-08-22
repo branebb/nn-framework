@@ -20,6 +20,8 @@ add_executable(${CMAKE_PROJECT_NAME} ${sources})
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     nn-framework/main.cu
     nn-framework/utils/error_check_cuda.cu
+    nn-framework/cudas/structures/dimensions.cu
+    nn-framework/cudas/structures/matrix.cu
 )
 
 target_compile_options(${CMAKE_PROJECT_NAME}
