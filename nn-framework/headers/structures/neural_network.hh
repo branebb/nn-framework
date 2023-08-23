@@ -1,9 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "layers/linear_layer.hh"
-#include "MSEcost.hh"
-
+#include "nn-framework/headers/layers/nn_layer.hh"
+#include "nn-framework/headers/cost_functions/cost_function.hh"
 class NeuralNetwork
 {
 private:
@@ -13,9 +12,13 @@ private:
 
     float learning_rate;
 
+	CostFunction* costFunction;
+
 public:
-    NeuralNetwork(float learning_rate = 0.01);
+    NeuralNetwork(float learning_rate = 0.01, CostFunction* costFunction);
 	~NeuralNetwork();
+
+	void setCostFunction(CostFunction* costFunction);
 
 	Matrix forward(Matrix X);
 	void backprop(Matrix predictions, Matrix target);

@@ -1,8 +1,9 @@
 #pragma once
 
-#include "matrix.hh"
+#include "cost_function.hh"
+#include "nn-framework/headers/structures/matrix.hh"
 
-class MSEcost
+class MSECost : public CostFunction 
 {
 public:
     float cost(Matrix target, Matrix predicted);

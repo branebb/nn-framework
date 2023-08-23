@@ -24,7 +24,7 @@ __global__ void tanhActivationBackprop(float* Z, float* dA, float* dZ, int Z_x_d
 
 TanhActivation::TanhActivation(std::string name) { this->name = name; }
 
-TanhActivation::~TanhActivation(){ }
+TanhActivation::~TanhActivation() { }
 
 Matrix& TanhActivation::forward(Matrix& Z) 
 {
@@ -55,4 +55,3 @@ Matrix& TanhActivation::backprop(Matrix& dA, float learning_rate)
 
     return dZ;
 }
-
