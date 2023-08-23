@@ -3,6 +3,7 @@
 #include <vector>
 #include "nn-framework/headers/layers/nn_layer.hh"
 #include "nn-framework/headers/cost_functions/cost_function.hh"
+
 class NeuralNetwork
 {
 private:

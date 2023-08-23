@@ -16,7 +16,7 @@ private:
 	void updateBias(Matrix& dZ, float learning_rate);
 
 public:
-    LinearLayer(std::string name, Dimensions W_shape);
+    LinearLayer(std::string name, Dimensions W_dims);
 	~LinearLayer();
 
 	Matrix& forward(Matrix& A);
