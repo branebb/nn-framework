@@ -15,7 +15,7 @@ private:
 	CostFunction* costFunction;
 
 public:
-    NeuralNetwork(float learning_rate = 0.01, CostFunction* costFunction);
+    NeuralNetwork(CostFunction* costFunction, float learning_rate = 0.01);
 	~NeuralNetwork();
 
 	void setCostFunction(CostFunction* costFunction);

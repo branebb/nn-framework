@@ -1,9 +1,9 @@
 #include "nn-framework/headers/structures/neural_network.hh"
 #include "nn-framework/utils/error_check_cuda.hpp"
 
-NeuralNetwork::NeuralNetwork(float learning_rate, CostFunction* costFunction) : 
-	learning_rate(learning_rate), 
-	costFunction(costFunction)
+NeuralNetwork::NeuralNetwork(CostFunction* costFunction, float learning_rate) : 
+	costFunction(costFunction),
+	learning_rate(learning_rate) 
 { }
 
 NeuralNetwork::~NeuralNetwork() 
