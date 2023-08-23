@@ -26,6 +26,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     nn-framework/cudas/structures/dimensions.cu
     nn-framework/cudas/structures/matrix.cu
     nn-framework/cudas/structures/neural_network.cu
+    nn-framework/cudas/cost_functions/MSEcost.cu
 )
 
 target_compile_options(${CMAKE_PROJECT_NAME}
