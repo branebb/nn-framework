@@ -3,32 +3,46 @@
 
 #include <assert.h>
 
-__global__ void meanSquareErrorCost(float* predictions, float* target, int size, float* cost)
+__global__ void meanSquareErrorCost(float* predictions, float* target, int features, int data, float* cost)
 {
-    int index = blockIdx.x * blockDim.x + threadIdx.x;
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (index < size) 
+    if (col < data) 
     {
-        float diff = predictions[index] - target[index];
-        atomicAdd(cost, diff * diff);
+        float col_cost = 0.0f;
+        for (int row = 0; row < features; row++)
+        {
+            float diff = predictions[row * data + col] - target[row * data + col];
+            col_cost += diff * diff;
+        }
+
+        atomicAdd(cost, col_cost);
     }
 
-    if (index == size - 1) 
-        atomicExch(cost, *cost / (2 * size));
+    if (col == data - 1) 
+        atomicExch(cost, *cost / (2 * data));
 }
 
-__global__ void dMeanSquareErrorCost(float* predictions, float* target, float* dY, int size)
+__global__ void dMeanSquareErrorCost(float* predictions, float* target, float* dY, int features, int data)
 {
-    int index = blockIdx.x * blockDim.x + threadIdx.x;
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if(index < size)
-        dY[index] = predictions[index] - target[index];
+    if (col < data) 
+    {
+        for (int row = 0; row < features; row++)
+        {
+            int index = row * data + col;
+            dY[index] = predictions[index] - target[index];
+        }
+    }
 }
 
 float MSECost::cost(Matrix predictions, Matrix target) 
 {
     // Checking if dimensions are same
-	assert(predictions.dims.x == target.dims.x);
+    // X number of data
+    // Y number of features 
+	assert(predictions.dims.x == target.dims.x && predictions.dims.y == target.dims.y);
 
 	float* cost;
 
@@ -39,7 +53,7 @@ float MSECost::cost(Matrix predictions, Matrix target)
 	dim3 block_size(256);
 	dim3 num_of_blocks((predictions.dims.x + block_size.x - 1) / block_size.x);
 
-	meanSquareErrorCost<<<num_of_blocks, block_size>>>(predictions.deviceData.get(), target.deviceData.get(), predictions.dims.x, cost);
+	meanSquareErrorCost<<<num_of_blocks, block_size>>>(predictions.deviceData.get(), target.deviceData.get(), predictions.dims.y, predictions.dims.x, cost);
 	
     cuda_check(cudaDeviceSynchronize());
 
@@ -53,12 +67,14 @@ float MSECost::cost(Matrix predictions, Matrix target)
 Matrix MSECost::dCost(Matrix predictions, Matrix target, Matrix dY) 
 {
     // Checking if dimensions are same
-	assert(predictions.dims.x == target.dims.x);
+    // X number of data
+    // Y number of features 
+	assert(predictions.dims.x == target.dims.x && predictions.dims.y == target.dims.y);
 
 	dim3 block_size(256);
 	dim3 num_of_blocks((predictions.dims.x + block_size.x - 1) / block_size.x);
 
-	dMeanSquareErrorCost<<<num_of_blocks, block_size>>>(predictions.deviceData.get(), target.deviceData.get(), dY.deviceData.get(), predictions.dims.x);
+	dMeanSquareErrorCost<<<num_of_blocks, block_size>>>(predictions.deviceData.get(), target.deviceData.get(), dY.deviceData.get(), predictions.dims.y, predictions.dims.x);
 	
     cuda_check(cudaDeviceSynchronize());
 

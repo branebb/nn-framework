@@ -92,12 +92,12 @@ LinearLayer::~LinearLayer() {}
 
 void LinearLayer::initializeWeightsRandomly()
 {
-    std::default_random_engine generator;
-    std::normal_distribution<float> normal_distribution(0.0, 1.0);
+    std::mt19937 rng(std::random_device{}());
+     std::uniform_real_distribution<float> dist(-0.5f, 0.5f);
 
     for (int x = 0; x < W.dims.x; x++)
         for (int y = 0; y < W.dims.y; y++)
-            W[y * W.dims.x + x] = normal_distribution(generator);
+            W[y * W.dims.x + x] = dist(rng);
 
     W.copyHostToDevice();
 }
