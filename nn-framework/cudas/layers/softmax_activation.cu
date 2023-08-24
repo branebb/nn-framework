@@ -32,7 +32,7 @@ Matrix &SoftmaxActivation::forward(Matrix &Z)
 
     softmaxActivationForward<<<num_of_blocks, block_size>>>(Z.deviceData.get(), A.deviceData.get(), Z.dims.x, Z.dims.y);
 
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 
     return A;
 }

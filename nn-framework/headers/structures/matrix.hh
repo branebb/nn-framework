@@ -33,4 +33,8 @@ public:
 
 	float& operator[](const int index);
 	const float& operator[](const int index) const;
+
+	void oneHotEncoding();
+
+	bool deviceAllocation();
 };

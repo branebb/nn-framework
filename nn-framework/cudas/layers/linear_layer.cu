@@ -85,7 +85,7 @@ LinearLayer::LinearLayer(std::string name, Dimensions W_dims) : W(W_dims), b(W_d
     W.allocateMemory();
     initializeBiasWithZeros();
     initializeWeightsRandomly();
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 }
 
 LinearLayer::~LinearLayer() {}
@@ -123,7 +123,7 @@ Matrix &LinearLayer::forward(Matrix &A)
 
     computeStoreLayerOutput(A);
 
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 
     return Z;
 }
@@ -141,13 +141,13 @@ Matrix &LinearLayer::backprop(Matrix &dZ, float learning_rate)
     dA.allocateMemoryIfNotAllocated(A.dims);
 
     computeStoreBackpropError(dZ);
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 
     updateBias(dZ, learning_rate);
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 
     updateWeights(dZ, learning_rate);
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 
     return dA;
 }

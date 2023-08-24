@@ -55,9 +55,9 @@ float MSECost::cost(Matrix predictions, Matrix target)
 
 	meanSquareErrorCost<<<num_of_blocks, block_size>>>(predictions.deviceData.get(), target.deviceData.get(), predictions.dims.y, predictions.dims.x, cost);
 	
-    cuda_check(cudaDeviceSynchronize());
+	cuda_check(cudaDeviceSynchronize());
 
-	float cost_value = *cost;
+    float cost_value = *cost;
 
 	cudaFree(cost);
 
