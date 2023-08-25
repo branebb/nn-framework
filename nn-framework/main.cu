@@ -25,9 +25,9 @@
 int main()
 {
     MSECost MSE;
-    AdamOptimizer adam(0.9, 0.9, 0.1);
+    AdamOptimizer adam(0.9, 0.999, 1e-7);
     Gradient grad;
-    float lr = 0.1;
+    float lr = 0.01;
     NeuralNetwork nn(&MSE, &adam, lr);
 
     nn.addLayer(new LinearLayer("linear1", Dimensions(2, 30)));
