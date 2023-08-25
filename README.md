@@ -1,1 +1,1 @@
-# Neureal network framework
+# Neural network framework
