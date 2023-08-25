@@ -3,6 +3,7 @@
 #include <vector>
 #include "nn-framework/headers/layers/nn_layer.hh"
 #include "nn-framework/headers/cost_functions/cost_function.hh"
+#include "nn-framework/headers/optimizers/optimizer.hh"
 
 class NeuralNetwork
 {
@@ -15,8 +16,10 @@ private:
 
 	CostFunction* costFunction;
 
+	Optimizer* optimizer; 
+
 public:
-    NeuralNetwork(CostFunction* costFunction, float learning_rate = 0.01);
+    NeuralNetwork(CostFunction* costFunction, Optimizer* optimizer, float learning_rate = 0.01);
 	~NeuralNetwork();
 
 	void setCostFunction(CostFunction* costFunction);

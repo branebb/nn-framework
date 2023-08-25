@@ -44,7 +44,7 @@ __global__ void linearLayerBackprop(float *W, float *dZ, float *dA, int W_x_dim,
     }
 }
 
-__global__ void linearLayerUpdateWeights(float *dZ, float *A, float *W, int dZ_x_dim, int dZ_y_dim, int A_x_dim, int A_y_dim, float learning_rate)
+__global__ void linearLayerCalculateWGradient(float *dZ, float *A, float *dW, int dZ_x_dim, int dZ_y_dim, int A_x_dim, int A_y_dim)
 {
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     int row = blockIdx.y * blockDim.y + threadIdx.y;
@@ -60,21 +60,24 @@ __global__ void linearLayerUpdateWeights(float *dZ, float *A, float *W, int dZ_x
         for (int i = 0; i < dZ_x_dim; i++)
             dW_value += dZ[row * dZ_x_dim + i] * A[col * A_x_dim + i];
 
-        W[row * W_x_dim + col] = W[row * W_x_dim + col] - learning_rate * (dW_value / A_x_dim);
+        dW[row * W_x_dim + col] = (dW_value / A_x_dim);
     }
 }
 
-__global__ void linearLayerUpdateBias(float *dZ, float *b, int dZ_x_dim, int dZ_y_dim, int b_x_dim, float learning_rate)
+__global__ void linearLayerCalculateBGradient(float *dZ, float *db, int dZ_x_dim, int dZ_y_dim, int b_x_dim)
 {
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
 
-    int index = blockIdx.x * blockDim.x + threadIdx.x;
-
-    if (index < dZ_x_dim * dZ_y_dim)
+    if (col < dZ_x_dim)
     {
-        int dZ_x = index % dZ_x_dim;
-        int dZ_y = index / dZ_x_dim;
-
-        atomicAdd(&b[dZ_y], -learning_rate * (dZ[dZ_y * dZ_x_dim + dZ_x] / dZ_x_dim));
+        float dB_value = 0.0f;
+        
+        for (int row = 0; row < dZ_y_dim; row++)
+        {
+            dB_value += dZ[row * dZ_x_dim + col];
+        }
+        
+        db[col] = dB_value / dZ_x_dim;
     }
 }
 
@@ -143,11 +146,22 @@ Matrix &LinearLayer::backprop(Matrix &dZ, float learning_rate)
     computeStoreBackpropError(dZ);
     // cuda_check(cudaDeviceSynchronize());
 
-    updateBias(dZ, learning_rate);
-    // cuda_check(cudaDeviceSynchronize());
+    dW.allocateMemoryIfNotAllocated(W.dims);
+    db.allocateMemoryIfNotAllocated(b.dims);
 
-    updateWeights(dZ, learning_rate);
-    // cuda_check(cudaDeviceSynchronize());
+    computeStoreWGradient(dZ);
+    cuda_check(cudaDeviceSynchronize());
+
+    computeStoreBGradient(dZ);
+    cuda_check(cudaDeviceSynchronize());
+
+
+    //if postoji regularizator u layeru onda dodaj na gradijent
+    //nesto jel
+    //kad to zavrsi update sa optimizerom
+
+    optimizer->updateW(dW, W, learning_rate);
+    optimizer->updateB(db, b, learning_rate);
 
     return dA;
 }
@@ -160,20 +174,21 @@ void LinearLayer::computeStoreBackpropError(Matrix &dZ)
     linearLayerBackprop<<<num_of_blocks, block_size>>>(W.deviceData.get(), dZ.deviceData.get(), dA.deviceData.get(), W.dims.x, W.dims.y, dZ.dims.x, dZ.dims.y);
 }
 
-void LinearLayer::updateWeights(Matrix &dZ, float learning_rate)
+void LinearLayer::computeStoreWGradient(Matrix &dZ)
 {
     dim3 block_size(8, 8);
     dim3 num_of_blocks((W.dims.x + block_size.x - 1) / block_size.x, (W.dims.y + block_size.y - 1) / block_size.y);
 
-    linearLayerUpdateWeights<<<num_of_blocks, block_size>>>(dZ.deviceData.get(), A.deviceData.get(), W.deviceData.get(), dZ.dims.x, dZ.dims.y, A.dims.x, A.dims.y, learning_rate);
+    linearLayerCalculateWGradient<<<num_of_blocks, block_size>>>(dZ.deviceData.get(), A.deviceData.get(), dW.deviceData.get(), dZ.dims.x, dZ.dims.y, A.dims.x, A.dims.y);
+
 }
 
-void LinearLayer::updateBias(Matrix &dZ, float learning_rate)
+void LinearLayer::computeStoreBGradient(Matrix &dZ)
 {
     dim3 block_size(256);
     dim3 num_of_blocks((dZ.dims.y * dZ.dims.x + block_size.x - 1) / block_size.x);
 
-    linearLayerUpdateBias<<<num_of_blocks, block_size>>>(dZ.deviceData.get(), b.deviceData.get(),dZ.dims.x, dZ.dims.y, b.dims.x, learning_rate);
+    linearLayerCalculateBGradient<<<num_of_blocks, block_size>>>(dZ.deviceData.get(), db.deviceData.get(), dZ.dims.x, dZ.dims.y, b.dims.x);
 }
 
 int LinearLayer::getXDim() const { return W.dims.x; }
@@ -183,3 +198,5 @@ int LinearLayer::getYDim() const { return W.dims.y; }
 Matrix LinearLayer::getWeightsMatrix() const { return W; }
 
 Matrix LinearLayer::getBiasVector() const { return b; }
+
+void LinearLayer::setOptimizer(Optimizer* optimizer) { this->optimizer = optimizer; }

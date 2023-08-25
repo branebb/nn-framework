@@ -18,12 +18,15 @@
 #include "nn-framework/headers/structures/matrix.hh"
 #include "nn-framework/coordinates_test.hh"
 #include "nn-framework/headers/layers/softmax_activation.hh"
+#include "nn-framework/headers/optimizers/optimizer.hh"
+#include "nn-framework/headers/optimizers/gradientDescentOptimizer.hh"
 
 int main()
 {
     MSECost MSE;
+    GradientDescentOptimizer gdo;
     float lr = 0.1;
-    NeuralNetwork nn(&MSE, lr);
+    NeuralNetwork nn(&MSE, &gdo, lr);
 
     nn.addLayer(new LinearLayer("linear1", Dimensions(2, 30)));
     nn.addLayer(new ReLUActivation("softmaxtest"));

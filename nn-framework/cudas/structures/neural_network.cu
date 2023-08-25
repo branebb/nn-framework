@@ -1,10 +1,12 @@
 #include "nn-framework/headers/structures/neural_network.hh"
 #include "nn-framework/utils/error_check_cuda.hpp"
+#include "nn-framework/headers/layers/linear_layer.hh"
 
 #include <assert.h>
 
-NeuralNetwork::NeuralNetwork(CostFunction* costFunction, float learning_rate) : 
+NeuralNetwork::NeuralNetwork(CostFunction* costFunction, Optimizer* optimizer, float learning_rate) : 
 	costFunction(costFunction),
+	optimizer(optimizer),
 	learning_rate(learning_rate) 
 { }
 
@@ -22,6 +24,12 @@ void NeuralNetwork::setCostFunction(CostFunction* costFunction)
 void NeuralNetwork::addLayer(NNLayer* layer) 
 {
 	this->layers.push_back(layer);
+
+	LinearLayer* linearLayer = dynamic_cast<LinearLayer*>(layer);
+
+	if (linearLayer)
+        linearLayer->setOptimizer(optimizer);
+
 }
 
 Matrix NeuralNetwork::forward(Matrix X) 
