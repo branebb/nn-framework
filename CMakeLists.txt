@@ -30,7 +30,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     nn-framework/cudas/layers/linear_layer.cu
     nn-framework/coordinates_test.cu
     nn-framework/cudas/layers/softmax_activation.cu
-    nn-framework/cudas/optimizers/gradientDescentOptimizer.cu
+    nn-framework/cudas/optimizers/gradient.cu
+    nn-framework/cudas/optimizers/adam.cu
+    
 )
 
 target_compile_options(${CMAKE_PROJECT_NAME}

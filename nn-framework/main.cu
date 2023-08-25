@@ -19,14 +19,16 @@
 #include "nn-framework/coordinates_test.hh"
 #include "nn-framework/headers/layers/softmax_activation.hh"
 #include "nn-framework/headers/optimizers/optimizer.hh"
-#include "nn-framework/headers/optimizers/gradientDescentOptimizer.hh"
+#include "nn-framework/headers/optimizers/gradient.hh"
+#include "nn-framework/headers/optimizers/adam.hh"
 
 int main()
 {
     MSECost MSE;
-    GradientDescentOptimizer gdo;
+    AdamOptimizer adam(0.9, 0.9, 0.1);
+    Gradient grad;
     float lr = 0.1;
-    NeuralNetwork nn(&MSE, &gdo, lr);
+    NeuralNetwork nn(&MSE, &adam, lr);
 
     nn.addLayer(new LinearLayer("linear1", Dimensions(2, 30)));
     nn.addLayer(new ReLUActivation("softmaxtest"));

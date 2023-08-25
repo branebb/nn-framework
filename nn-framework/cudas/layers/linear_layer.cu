@@ -159,8 +159,7 @@ Matrix &LinearLayer::backprop(Matrix &dZ, float learning_rate)
     //nesto jel
     //kad to zavrsi update sa optimizerom
 
-    optimizer->updateW(dW, W, learning_rate);
-    optimizer->updateB(db, b, learning_rate);
+    optimizer->updateStep(dW, W, db, b, learning_rate);
 
     return dA;
 }

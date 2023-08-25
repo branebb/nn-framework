@@ -28,8 +28,10 @@ void NeuralNetwork::addLayer(NNLayer* layer)
 	LinearLayer* linearLayer = dynamic_cast<LinearLayer*>(layer);
 
 	if (linearLayer)
+	{
         linearLayer->setOptimizer(optimizer);
-
+		optimizer->initialize(linearLayer->getWeightsMatrix().dims, linearLayer->getBiasVector().dims);
+	}
 }
 
 Matrix NeuralNetwork::forward(Matrix X) 
