@@ -32,7 +32,7 @@ __global__ void dMeanSquareErrorCost(float* predictions, float* target, float* d
         for (int row = 0; row < features; row++)
         {
             int index = row * data + col;
-            dY[index] = predictions[index] - target[index];
+            dY[index] = ((predictions[index] - target[index]) / data);
         }
     }
 }

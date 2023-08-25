@@ -155,7 +155,6 @@ Matrix &LinearLayer::backprop(Matrix &dZ, float learning_rate)
     computeStoreBGradient(dZ);
     cuda_check(cudaDeviceSynchronize());
 
-
     //if postoji regularizator u layeru onda dodaj na gradijent
     //nesto jel
     //kad to zavrsi update sa optimizerom
