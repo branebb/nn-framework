@@ -6,7 +6,7 @@ __global__ void updateWAdam(float *dW, float *W, float *mW, float *vW, float bet
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (idx < size)
-    {
+    { 
         mW[idx] = beta1 * mW[idx] + (1 - beta1) * dW[idx];
         vW[idx] = beta2 * vW[idx] + (1 - beta2) * dW[idx] * dW[idx];
 
@@ -63,11 +63,11 @@ void AdamOptimizer::setMatricesToZero()
 {
     for (int x = 0; x < mW.dims.x; x++)
         for (int y = 0; y < mW.dims.y; y++)
-            mW[y * mW.dims.x + x] = vW[y * mW.dims.x + x] = 0;
+            mW[y * mW.dims.x + x] = vW[y * mW.dims.x + x] = 0.0f;
     
     for (int x = 0; x < mb.dims.x; x++)
         for (int y = 0; y < mb.dims.y; y++)
-            mb[y * mb.dims.x + x] = vb[y * mb.dims.x + x] = 0;          
+            mb[y * mb.dims.x + x] = vb[y * mb.dims.x + x] = 0.0f;          
 }
 
 void AdamOptimizer::initialize(Dimensions weightDims, Dimensions biasDims)
@@ -98,7 +98,7 @@ void AdamOptimizer::updateStep(Matrix &dW, Matrix &W, Matrix &db, Matrix &b, flo
 { 
     updateW(dW, W, learning_rate);
     updateB(db, b, learning_rate);
-    increaseT();
+    // increaseT();
 }
 
 void AdamOptimizer::increaseT() { t++; }

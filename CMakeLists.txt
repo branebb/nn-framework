@@ -3,13 +3,16 @@ cmake_minimum_required(VERSION 3.17 FATAL_ERROR)
 project(nn-framework LANGUAGES CXX CUDA)
 message("Project name: " ${CMAKE_PROJECT_NAME})
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CUDA_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CUDA_STANDARD 14)
 
 if(MSVC)
     set(_CRT_SECURE_NO_WARNINGS 1)
     set(CURL_STATICLIB 1)
+     # 8 MB stack size
 endif()
+
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:41943040")
 
 include_directories(
     /

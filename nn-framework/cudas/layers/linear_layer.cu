@@ -96,7 +96,7 @@ LinearLayer::~LinearLayer() {}
 void LinearLayer::initializeWeightsRandomly()
 {
     std::mt19937 rng(std::random_device{}());
-    std::uniform_real_distribution<float> dist(-0.5f, 0.5f);
+    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
     for (int x = 0; x < W.dims.x; x++)
         for (int y = 0; y < W.dims.y; y++)
@@ -158,7 +158,6 @@ Matrix &LinearLayer::backprop(Matrix &dZ, float learning_rate)
     if(regularization)
     {
         regularization->gradientRegularization(W, dW, W.dims.x * W.dims.y);
-        std::cout << "regularizacija dodana\n";
     }
     
     optimizer->updateStep(dW, W, db, b, learning_rate);

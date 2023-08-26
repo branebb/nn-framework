@@ -27,18 +27,18 @@ int main()
 {
     float lambda = 0.0f;
     L2 l2(lambda);
-    MSECost MSE(nullptr);
-    AdamOptimizer adam(0.9, 0.999, 1e-8);
+    MSECost MSE(&l2);
+    AdamOptimizer adam(0.9, 0.999, 1e-7);
     Gradient grad;
     float lr = 0.01;
-    NeuralNetwork nn(&MSE, &adam, nullptr, lr);
+    NeuralNetwork nn(&MSE, &adam, &l2, lr);
 
     nn.addLayer(new LinearLayer("linear1", Dimensions(2, 30)));
     nn.addLayer(new ReLUActivation("relu"));
     nn.addLayer(new LinearLayer("linear2", Dimensions(30, 2)));
     nn.addLayer(new SoftmaxActivation("softmax"));
 
-    CoordinatesDataset dataset(100, 20);
+    CoordinatesDataset dataset(256, 10);
 
     Matrix Y;
 
@@ -60,11 +60,11 @@ int main()
                 std::cout << "Epoch: " << epoch << ", Cost: " << cost / dataset.getNumOfBatches() << std::endl;
     }
 
-    Y = nn.forward(dataset.getBatches().at(dataset.getNumOfBatches() - 1));
+    // Y = nn.forward(dataset.getBatches().at(dataset.getNumOfBatches() - 1));
 
-    float accuracy = nn.computeAccuracy(Y, dataset.getTargets().at(dataset.getNumOfBatches() - 1));
+    // float accuracy = nn.computeAccuracy(Y, dataset.getTargets().at(dataset.getNumOfBatches() - 1));
 
-    std::cout << "Accuracy: " << accuracy << std::endl;
+    // std::cout << "Accuracy: " << accuracy << std::endl;
 
     return 0;
 }

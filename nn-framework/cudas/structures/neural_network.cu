@@ -1,6 +1,7 @@
 #include "nn-framework/headers/structures/neural_network.hh"
 #include "nn-framework/utils/error_check_cuda.hpp"
 #include "nn-framework/headers/layers/linear_layer.hh"
+#include "nn-framework/headers/optimizers/adam.hh"
 
 #include <assert.h>
 
@@ -58,6 +59,14 @@ void NeuralNetwork::backprop(Matrix predictions, Matrix target)
 
 	for (auto it = this->layers.rbegin(); it != this->layers.rend(); it++) 
 		error = (*it)->backprop(error, learning_rate);
+	
+	
+	AdamOptimizer* adam = dynamic_cast<AdamOptimizer*>(optimizer);
+	
+	if(adam)
+	{
+		adam->increaseT();
+	}
 
 	cuda_check(cudaDeviceSynchronize());
 }
