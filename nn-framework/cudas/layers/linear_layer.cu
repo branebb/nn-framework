@@ -96,7 +96,7 @@ LinearLayer::~LinearLayer() {}
 void LinearLayer::initializeWeightsRandomly()
 {
     std::mt19937 rng(std::random_device{}());
-     std::uniform_real_distribution<float> dist(-0.5f, 0.5f);
+    std::uniform_real_distribution<float> dist(-0.5f, 0.5f);
 
     for (int x = 0; x < W.dims.x; x++)
         for (int y = 0; y < W.dims.y; y++)
@@ -126,14 +126,14 @@ Matrix &LinearLayer::forward(Matrix &A)
 
     computeStoreLayerOutput(A);
 
-    // cuda_check(cudaDeviceSynchronize());
+    cuda_check(cudaDeviceSynchronize());
 
     return Z;
 }
 
 void LinearLayer::computeStoreLayerOutput(Matrix &A)
 {
-    dim3 block_size(8, 8);
+    dim3 block_size(32, 32);
     dim3 num_of_blocks((Z.dims.x + block_size.x - 1) / block_size.x, (Z.dims.y + block_size.y - 1) / block_size.y);
 
     linearLayerForward<<<num_of_blocks, block_size>>>(W.deviceData.get(), A.deviceData.get(), Z.deviceData.get(), b.deviceData.get(), W.dims.x, W.dims.y, A.dims.x, A.dims.y);
@@ -144,7 +144,7 @@ Matrix &LinearLayer::backprop(Matrix &dZ, float learning_rate)
     dA.allocateMemoryIfNotAllocated(A.dims);
 
     computeStoreBackpropError(dZ);
-    // cuda_check(cudaDeviceSynchronize());
+    cuda_check(cudaDeviceSynchronize());
 
     dW.allocateMemoryIfNotAllocated(W.dims);
     db.allocateMemoryIfNotAllocated(b.dims);
@@ -155,18 +155,22 @@ Matrix &LinearLayer::backprop(Matrix &dZ, float learning_rate)
     computeStoreBGradient(dZ);
     cuda_check(cudaDeviceSynchronize());
 
-    //if postoji regularizator u layeru onda dodaj na gradijent
-    //nesto jel
-    //kad to zavrsi update sa optimizerom
-
+    if(regularization)
+    {
+        regularization->gradientRegularization(W, dW, W.dims.x * W.dims.y);
+        std::cout << "regularizacija dodana\n";
+    }
+    
     optimizer->updateStep(dW, W, db, b, learning_rate);
+    
+    cuda_check(cudaDeviceSynchronize());
 
     return dA;
 }
 
 void LinearLayer::computeStoreBackpropError(Matrix &dZ)
 {
-    dim3 block_size(8, 8);
+    dim3 block_size(32, 32);
     dim3 num_of_blocks((A.dims.x + block_size.x - 1) / block_size.x, (A.dims.y + block_size.y - 1) / block_size.y);
 
     linearLayerBackprop<<<num_of_blocks, block_size>>>(W.deviceData.get(), dZ.deviceData.get(), dA.deviceData.get(), W.dims.x, W.dims.y, dZ.dims.x, dZ.dims.y);
@@ -174,16 +178,15 @@ void LinearLayer::computeStoreBackpropError(Matrix &dZ)
 
 void LinearLayer::computeStoreWGradient(Matrix &dZ)
 {
-    dim3 block_size(8, 8);
+    dim3 block_size(32, 32);
     dim3 num_of_blocks((W.dims.x + block_size.x - 1) / block_size.x, (W.dims.y + block_size.y - 1) / block_size.y);
 
     linearLayerCalculateWGradient<<<num_of_blocks, block_size>>>(dZ.deviceData.get(), A.deviceData.get(), dW.deviceData.get(), dZ.dims.x, dZ.dims.y, A.dims.x, A.dims.y);
-
 }
 
 void LinearLayer::computeStoreBGradient(Matrix &dZ)
 {
-    dim3 block_size(256);
+    dim3 block_size(512);
     dim3 num_of_blocks((dZ.dims.y * dZ.dims.x + block_size.x - 1) / block_size.x);
 
     linearLayerCalculateBGradient<<<num_of_blocks, block_size>>>(dZ.deviceData.get(), db.deviceData.get(), dZ.dims.x, dZ.dims.y, b.dims.x);
@@ -198,3 +201,5 @@ Matrix LinearLayer::getWeightsMatrix() const { return W; }
 Matrix LinearLayer::getBiasVector() const { return b; }
 
 void LinearLayer::setOptimizer(Optimizer* optimizer) { this->optimizer = optimizer; }
+
+void LinearLayer::setRegularization(Regularization* regularization) { this->regularization = regularization; }

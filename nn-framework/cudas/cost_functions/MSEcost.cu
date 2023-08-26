@@ -1,5 +1,6 @@
 #include "nn-framework/headers/cost_functions/MSEcost.hh"
 #include "nn-framework/utils/error_check_cuda.hpp"
+#include "nn-framework/headers/regularization/regularization.hh"
 
 #include <assert.h>
 
@@ -37,7 +38,7 @@ __global__ void dMeanSquareErrorCost(float* predictions, float* target, float* d
     }
 }
 
-float MSECost::cost(Matrix predictions, Matrix target) 
+float MSECost::cost(Matrix& predictions, Matrix& target, Matrix& W) 
 {
     // Checking if dimensions are same
     // X number of data
@@ -50,7 +51,7 @@ float MSECost::cost(Matrix predictions, Matrix target)
 	
     *cost = 0.0f;
 
-	dim3 block_size(256);
+	dim3 block_size(512);
 	dim3 num_of_blocks((predictions.dims.x + block_size.x - 1) / block_size.x);
 
 	meanSquareErrorCost<<<num_of_blocks, block_size>>>(predictions.deviceData.get(), target.deviceData.get(), predictions.dims.y, predictions.dims.x, cost);
@@ -61,10 +62,19 @@ float MSECost::cost(Matrix predictions, Matrix target)
 
 	cudaFree(cost);
 
+    if(regularization != nullptr)
+    {
+        float regTerm  = 0.0f;
+
+        regTerm = regularization->costRegularization(W);
+
+        cost_value += regTerm;
+    }
+
 	return cost_value;
 }
 
-Matrix MSECost::dCost(Matrix predictions, Matrix target, Matrix dY) 
+Matrix MSECost::dCost(Matrix& predictions, Matrix& target, Matrix& dY)
 {
     // Checking if dimensions are same
     // X number of data
@@ -80,3 +90,5 @@ Matrix MSECost::dCost(Matrix predictions, Matrix target, Matrix dY)
 
 	return dY;
 }
+
+MSECost::MSECost(Regularization* regularization): regularization(regularization) { }

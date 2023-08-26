@@ -2,6 +2,7 @@
 
 #include "nn_layer.hh"
 #include "nn-framework/headers/optimizers/optimizer.hh"
+#include "nn-framework/headers/regularization/regularization.hh"
 
 class LinearLayer : public NNLayer
 {
@@ -9,6 +10,8 @@ private:
     Matrix W, b, Z, A, dA, dW, db;
 
 	Optimizer* optimizer;
+
+	Regularization* regularization;
 
     void initializeBiasWithZeros();
 	void initializeWeightsRandomly();
@@ -34,5 +37,6 @@ public:
 	Matrix getBiasVector() const;
 
 	void setOptimizer(Optimizer* optimizer);
+	void setRegularization(Regularization* regularization);
 
 };

@@ -5,6 +5,6 @@
 class CostFunction 
 {
 public:
-    virtual float cost(Matrix target, Matrix predicted) = 0;
-    virtual Matrix dCost(Matrix predicted, Matrix target, Matrix dY) = 0;
+    virtual float cost(Matrix& target, Matrix& predicted, Matrix& W) = 0;
+    virtual Matrix dCost(Matrix& predicted, Matrix& target, Matrix& dY) = 0;
 };

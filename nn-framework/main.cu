@@ -21,17 +21,20 @@
 #include "nn-framework/headers/optimizers/optimizer.hh"
 #include "nn-framework/headers/optimizers/gradient.hh"
 #include "nn-framework/headers/optimizers/adam.hh"
+#include "nn-framework/headers/regularization/L2.hh"
 
 int main()
 {
-    MSECost MSE;
-    AdamOptimizer adam(0.9, 0.999, 1e-7);
+    float lambda = 0.0f;
+    L2 l2(lambda);
+    MSECost MSE(nullptr);
+    AdamOptimizer adam(0.9, 0.999, 1e-8);
     Gradient grad;
     float lr = 0.01;
-    NeuralNetwork nn(&MSE, &adam, lr);
+    NeuralNetwork nn(&MSE, &adam, nullptr, lr);
 
     nn.addLayer(new LinearLayer("linear1", Dimensions(2, 30)));
-    nn.addLayer(new ReLUActivation("softmaxtest"));
+    nn.addLayer(new ReLUActivation("relu"));
     nn.addLayer(new LinearLayer("linear2", Dimensions(30, 2)));
     nn.addLayer(new SoftmaxActivation("softmax"));
 
@@ -47,7 +50,10 @@ int main()
         {
             Y = nn.forward(dataset.getBatches().at(batch));
             nn.backprop(Y, dataset.getTargets().at(batch));
-            cost += MSE.cost(Y, dataset.getTargets().at(batch));
+        
+            LinearLayer* linearLayer = dynamic_cast<LinearLayer*>(nn.getLayers()[2]);
+            Matrix layerW = linearLayer->getWeightsMatrix();
+            cost += MSE.cost(Y, dataset.getTargets().at(batch), layerW);
         }
 
         if (epoch % 10 == 0) 

@@ -32,6 +32,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     nn-framework/cudas/layers/softmax_activation.cu
     nn-framework/cudas/optimizers/gradient.cu
     nn-framework/cudas/optimizers/adam.cu
+    nn-framework/cudas/regularization/L2.cu
     
 )
 

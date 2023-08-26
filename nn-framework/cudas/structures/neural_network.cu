@@ -4,9 +4,10 @@
 
 #include <assert.h>
 
-NeuralNetwork::NeuralNetwork(CostFunction* costFunction, Optimizer* optimizer, float learning_rate) : 
+NeuralNetwork::NeuralNetwork(CostFunction* costFunction, Optimizer* optimizer, Regularization* regularization , float learning_rate) : 
 	costFunction(costFunction),
 	optimizer(optimizer),
+	regularization(regularization),
 	learning_rate(learning_rate) 
 { }
 
@@ -31,6 +32,9 @@ void NeuralNetwork::addLayer(NNLayer* layer)
 	{
         linearLayer->setOptimizer(optimizer);
 		optimizer->initialize(linearLayer->getWeightsMatrix().dims, linearLayer->getBiasVector().dims);
+		linearLayer->setRegularization(regularization);
+		// std::cout << "regularizacija dodana\n";
+
 	}
 }
 
@@ -42,6 +46,7 @@ Matrix NeuralNetwork::forward(Matrix X)
 		Z = layer->forward(Z);
 
 	Y = Z;
+
 	return Y;
 }
 

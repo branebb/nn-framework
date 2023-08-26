@@ -7,17 +7,15 @@ __global__ void updateWAdam(float *dW, float *W, float *mW, float *vW, float bet
 
     if (idx < size)
     {
-        // Update m and v for weights
         mW[idx] = beta1 * mW[idx] + (1 - beta1) * dW[idx];
         vW[idx] = beta2 * vW[idx] + (1 - beta2) * dW[idx] * dW[idx];
 
-        // Bias correction
         float beta1_t = pow(beta1, t);
         float beta2_t = pow(beta2, t);
 
-        // Update W using m and v
         float m_hat = mW[idx] / (1 - beta1_t);
         float v_hat = vW[idx] / (1 - beta2_t);
+
         W[idx] -= learning_rate * m_hat / (sqrt(v_hat) + epsilon);
     }
 }

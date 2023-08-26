@@ -2,11 +2,16 @@
 
 #include "cost_function.hh"
 #include "nn-framework/headers/structures/matrix.hh"
+#include "nn-framework/headers/regularization/regularization.hh"
 
 class MSECost : public CostFunction 
 {
+private:
+    Regularization* regularization;
 public:
-    float cost(Matrix target, Matrix predicted);
+    MSECost(Regularization* regularization = nullptr);
 
-    Matrix dCost(Matrix predicted, Matrix target, Matrix dY);
+    float cost(Matrix& target, Matrix& predicted, Matrix& W);
+
+    Matrix dCost(Matrix& predicted, Matrix& target, Matrix& dY);
 };
