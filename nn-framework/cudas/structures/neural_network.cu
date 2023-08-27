@@ -34,8 +34,6 @@ void NeuralNetwork::addLayer(NNLayer* layer)
         linearLayer->setOptimizer(optimizer);
 		optimizer->initialize(linearLayer->getWeightsMatrix().dims, linearLayer->getBiasVector().dims);
 		linearLayer->setRegularization(regularization);
-		// std::cout << "regularizacija dodana\n";
-
 	}
 }
 
@@ -60,14 +58,6 @@ void NeuralNetwork::backprop(Matrix predictions, Matrix target)
 	for (auto it = this->layers.rbegin(); it != this->layers.rend(); it++) 
 		error = (*it)->backprop(error, learning_rate);
 	
-	
-	AdamOptimizer* adam = dynamic_cast<AdamOptimizer*>(optimizer);
-	
-	if(adam)
-	{
-		adam->increaseT();
-	}
-
 	cuda_check(cudaDeviceSynchronize());
 }
 

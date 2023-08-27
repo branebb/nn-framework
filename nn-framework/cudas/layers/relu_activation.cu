@@ -36,7 +36,7 @@ Matrix& ReLUActivation::forward(Matrix& Z)
 
 	A.allocateMemoryIfNotAllocated(Z.dims);
 
-	dim3 block_size(256);
+	dim3 block_size(1024);
 	dim3 num_of_blocks((Z.dims.y * Z.dims.x + block_size.x - 1) / block_size.x);
 
 	reluActivationForward<<<num_of_blocks, block_size>>>(Z.deviceData.get(), A.deviceData.get(), Z.dims.x, Z.dims.y);
@@ -50,7 +50,7 @@ Matrix& ReLUActivation::backprop(Matrix& dA, float learning_rate)
 {
 	dZ.allocateMemoryIfNotAllocated(Z.dims);
 
-	dim3 block_size(256);
+	dim3 block_size(1024);
 	dim3 num_of_blocks((Z.dims.y * Z.dims.x + block_size.x - 1) / block_size.x);
 
 	reluActivationBackprop<<<num_of_blocks, block_size>>>(Z.deviceData.get(), dA.deviceData.get(), dZ.deviceData.get(), Z.dims.x, Z.dims.y);

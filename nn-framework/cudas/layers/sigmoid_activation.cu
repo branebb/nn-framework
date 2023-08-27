@@ -35,12 +35,12 @@ Matrix& SigmoidActivation::forward(Matrix& Z)
 
 	A.allocateMemoryIfNotAllocated(Z.dims);
 
-	dim3 block_size(256);
+	dim3 block_size(1024);
 	dim3 num_of_blocks((Z.dims.y * Z.dims.x + block_size.x - 1) / block_size.x);
 
 	sigmoidActivationForward<<<num_of_blocks, block_size>>>(Z.deviceData.get(), A.deviceData.get(), Z.dims.x, Z.dims.y);
 	
-    // cuda_check(cudaDeviceSynchronize());
+    cuda_check(cudaDeviceSynchronize());
 
 	return A;
 }
@@ -49,7 +49,7 @@ Matrix& SigmoidActivation::backprop(Matrix& dA, float learning_rate)
 {
 	dZ.allocateMemoryIfNotAllocated(Z.dims);
 
-	dim3 block_size(256);
+	dim3 block_size(1024);
 	dim3 num_of_blocks((Z.dims.y * Z.dims.x + block_size.x - 1) / block_size.x);
 	
     sigmoidActivationBackprop<<<num_of_blocks, block_size>>>(Z.deviceData.get(), dA.deviceData.get(), dZ.deviceData.get(), Z.dims.x, Z.dims.y);

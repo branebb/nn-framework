@@ -22,49 +22,57 @@
 #include "nn-framework/headers/optimizers/gradient.hh"
 #include "nn-framework/headers/optimizers/adam.hh"
 #include "nn-framework/headers/regularization/L2.hh"
+#include "nn-framework/mnist.hh"
 
 int main()
 {
+    MNIST traindata(128, 200, "datasets/mnist_train.csv");
+    // CoordinatesDataset test(1, 1);
+    std:: cout << "Data prepared successfully!\n";
+
     float lambda = 0.0f;
     L2 l2(lambda);
+
     MSECost MSE(&l2);
-    AdamOptimizer adam(0.9, 0.999, 1e-7);
+
+    float beta1 = 0.9;
+    float beta2 = 0.999;
+    float epsilon = 1e-4;
+    AdamOptimizer adam(beta1, beta2, epsilon);
+
     Gradient grad;
-    float lr = 0.01;
-    NeuralNetwork nn(&MSE, &adam, &l2, lr);
 
-    nn.addLayer(new LinearLayer("linear1", Dimensions(2, 30)));
+    float lr = 0.1;
+
+    NeuralNetwork nn(&MSE, &grad, &l2, lr);
+
+    nn.addLayer(new LinearLayer("linear1", Dimensions(784, 256)));
     nn.addLayer(new ReLUActivation("relu"));
-    nn.addLayer(new LinearLayer("linear2", Dimensions(30, 2)));
+    nn.addLayer(new LinearLayer("linear2", Dimensions(256, 256)));
+    nn.addLayer(new ReLUActivation("relu"));
+    nn.addLayer(new LinearLayer("linear2", Dimensions(256, 10)));
     nn.addLayer(new SoftmaxActivation("softmax"));
-
-    CoordinatesDataset dataset(256, 10);
 
     Matrix Y;
 
-    for (int epoch = 0; epoch < 101; epoch++) 
+    for (int epoch = 0; epoch < 21; epoch++) 
     {
         float cost = 0.0;
 
-        for (int batch = 0; batch < dataset.getNumOfBatches() - 1; batch++) 
+        for (int batch = 0; batch < traindata.getNumOfBatches(); batch++) 
         {
-            Y = nn.forward(dataset.getBatches().at(batch));
-            nn.backprop(Y, dataset.getTargets().at(batch));
+            Y = nn.forward(traindata.getBatches().at(batch));
+            nn.backprop(Y, traindata.getTargets().at(batch));
         
             LinearLayer* linearLayer = dynamic_cast<LinearLayer*>(nn.getLayers()[2]);
             Matrix layerW = linearLayer->getWeightsMatrix();
-            cost += MSE.cost(Y, dataset.getTargets().at(batch), layerW);
+            cost += MSE.cost(Y, traindata.getTargets().at(batch), layerW);
         }
 
         if (epoch % 10 == 0) 
-                std::cout << "Epoch: " << epoch << ", Cost: " << cost / dataset.getNumOfBatches() << std::endl;
+                std::cout << "Epoch: " << epoch << ", Cost: " << cost / traindata.getNumOfBatches() << std::endl;
     }
 
-    // Y = nn.forward(dataset.getBatches().at(dataset.getNumOfBatches() - 1));
-
-    // float accuracy = nn.computeAccuracy(Y, dataset.getTargets().at(dataset.getNumOfBatches() - 1));
-
-    // std::cout << "Accuracy: " << accuracy << std::endl;
-
     return 0;
+
 }

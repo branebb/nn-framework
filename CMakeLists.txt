@@ -36,7 +36,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     nn-framework/cudas/optimizers/gradient.cu
     nn-framework/cudas/optimizers/adam.cu
     nn-framework/cudas/regularization/L2.cu
-    
+    nn-framework/mnist.cu
 )
 
 target_compile_options(${CMAKE_PROJECT_NAME}

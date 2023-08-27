@@ -9,7 +9,7 @@ CoordinatesDataset::CoordinatesDataset(size_t batch_size, size_t number_of_batch
     for (int i = 0; i < number_of_batches; i++) {
         batches.push_back(Matrix(Dimensions(batch_size, 2)));
         targets.push_back(Matrix(Dimensions(batch_size, 2)));
-
+        
         batches[i].allocateMemory();
         targets[i].allocateMemory();
 

@@ -51,7 +51,7 @@ float MSECost::cost(Matrix& predictions, Matrix& target, Matrix& W)
 	
     *cost = 0.0f;
 
-	dim3 block_size(512);
+	dim3 block_size(1024);
 	dim3 num_of_blocks((predictions.dims.x + block_size.x - 1) / block_size.x);
 
 	meanSquareErrorCost<<<num_of_blocks, block_size>>>(predictions.deviceData.get(), target.deviceData.get(), predictions.dims.y, predictions.dims.x, cost);
@@ -81,7 +81,7 @@ Matrix MSECost::dCost(Matrix& predictions, Matrix& target, Matrix& dY)
     // Y number of features 
 	assert(predictions.dims.x == target.dims.x && predictions.dims.y == target.dims.y);
 
-	dim3 block_size(256);
+	dim3 block_size(1024);
 	dim3 num_of_blocks((predictions.dims.x + block_size.x - 1) / block_size.x);
 
 	dMeanSquareErrorCost<<<num_of_blocks, block_size>>>(predictions.deviceData.get(), target.deviceData.get(), dY.deviceData.get(), predictions.dims.y, predictions.dims.x);

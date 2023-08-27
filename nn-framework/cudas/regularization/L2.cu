@@ -29,10 +29,11 @@ __global__ void calculateRegularizationTerm(float* W, float lambda, int size, fl
 
 void L2::gradientRegularization(Matrix& W, Matrix &dW, int size)
 {
-    dim3 block_size(512);
+    dim3 block_size(1024);
 	dim3 num_of_blocks((W.dims.x + block_size.x - 1) / block_size.x);
 
     applyRegularization<<<num_of_blocks, block_size>>>(dW.deviceData.get(), W.deviceData.get(), lambda, dW.dims.x * dW.dims.y);
+    
     cuda_check(cudaDeviceSynchronize());
 }
 
@@ -44,10 +45,11 @@ float L2::costRegularization(Matrix &W)
 	
     *regularizationTerm = 0.0f;
 
-	dim3 block_size(512);
+	dim3 block_size(1024);
 	dim3 num_of_blocks((W.dims.x + block_size.x - 1) / block_size.x);
 
     calculateRegularizationTerm<<<num_of_blocks, block_size>>>(W.deviceData.get(), lambda, W.dims.x * W.dims.y, regularizationTerm);
+    
     cuda_check(cudaDeviceSynchronize());
 
     float regularizationTermValue = *regularizationTerm;

@@ -77,16 +77,17 @@ void AdamOptimizer::initialize(Dimensions weightDims, Dimensions biasDims)
 
 void AdamOptimizer::updateW(Matrix &dW, Matrix &W, float learning_rate)
 {
-    dim3 block_size(256);
+    dim3 block_size(1024);
     dim3 num_of_blocks((dW.dims.y * dW.dims.x + block_size.x - 1) / block_size.x);
 
     updateWAdam<<<num_of_blocks, block_size>>>(dW.deviceData.get(), W.deviceData.get(), mW.deviceData.get(), vW.deviceData.get(), beta1, beta2, epsilon, learning_rate, dW.dims.y * dW.dims.x, t);
+    
     cuda_check(cudaDeviceSynchronize());
 }
 
 void AdamOptimizer::updateB(Matrix &db, Matrix &b, float learning_rate)
 { 
-    dim3 block_size(256);
+    dim3 block_size(1024);
     dim3 num_of_blocks((db.dims.y * db.dims.x + block_size.x - 1) / block_size.x);
 
     updateBAdam<<<num_of_blocks, block_size>>>(db.deviceData.get(), b.deviceData.get(), mb.deviceData.get(), vb.deviceData.get(), beta1, beta2, epsilon, learning_rate, db.dims.y * db.dims.x, t);
@@ -98,7 +99,7 @@ void AdamOptimizer::updateStep(Matrix &dW, Matrix &W, Matrix &db, Matrix &b, flo
 { 
     updateW(dW, W, learning_rate);
     updateB(db, b, learning_rate);
-    // increaseT();
+    increaseT();
 }
 
 void AdamOptimizer::increaseT() { t++; }
