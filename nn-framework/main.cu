@@ -35,11 +35,6 @@ int main()
 
     MSECost MSE(&l2);
 
-    float beta1 = 0.9;
-    float beta2 = 0.999;
-    float epsilon = 1e-4;
-    AdamOptimizer adam(beta1, beta2, epsilon);
-
     Gradient grad;
 
     float lr = 0.1;

@@ -93,7 +93,7 @@ std::vector<std::vector<float>> MNIST::parseMNISTCSV(const std::string& filename
 
         while (std::getline(iss, value, ',')) 
         {
-            entry.push_back(std::stof(value) / 256.0f); 
+            entry.push_back(std::stof(value) / 255.0f); 
         }
 
         data.push_back(entry);

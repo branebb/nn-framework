@@ -67,7 +67,10 @@ void AdamOptimizer::setMatricesToZero()
     
     for (int x = 0; x < mb.dims.x; x++)
         for (int y = 0; y < mb.dims.y; y++)
-            mb[y * mb.dims.x + x] = vb[y * mb.dims.x + x] = 0.0f;          
+            mb[y * mb.dims.x + x] = vb[y * mb.dims.x + x] = 0.0f;
+
+    mW.copyHostToDevice();
+    mb.copyHostToDevice();          
 }
 
 void AdamOptimizer::initialize(Dimensions weightDims, Dimensions biasDims)
