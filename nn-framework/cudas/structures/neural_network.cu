@@ -29,10 +29,23 @@ void NeuralNetwork::addLayer(NNLayer* layer)
 
 	LinearLayer* linearLayer = dynamic_cast<LinearLayer*>(layer);
 
+
 	if (linearLayer)
 	{
-        linearLayer->setOptimizer(optimizer);
-		optimizer->initialize(linearLayer->getWeightsMatrix().dims, linearLayer->getBiasVector().dims);
+		Optimizer* newOptimizer = nullptr;
+		AdamOptimizer* adamOptimizer = dynamic_cast<AdamOptimizer*>(optimizer);
+
+		if(adamOptimizer)
+		{
+			newOptimizer = new AdamOptimizer(adamOptimizer->getBeta1(), adamOptimizer->getBeta2(), adamOptimizer->getEpsilon());
+			newOptimizer->initialize(Dimensions(linearLayer->getXDim(), linearLayer->getYDim()), Dimensions(linearLayer->getXDim(), 1));
+		}
+		else
+		{
+			newOptimizer = optimizer;
+		}
+		
+        linearLayer->setOptimizer(newOptimizer);
 		linearLayer->setRegularization(regularization);
 	}
 }

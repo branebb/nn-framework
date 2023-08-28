@@ -45,18 +45,9 @@ AdamOptimizer::AdamOptimizer(float beta1, float beta2, float epsilon):
     beta1(beta1), 
     beta2(beta2), 
     epsilon(epsilon),
-    mW(wDims),
-    vW(wDims),
-    mb(bDims),
-    vb(bDims),
     t(1)
 { 
-    mW.allocateMemory();   
-    vW.allocateMemory();   
-    mb.allocateMemory();   
-    vb.allocateMemory();
 
-    setMatricesToZero();
 }
 
 void AdamOptimizer::setMatricesToZero()
@@ -75,7 +66,17 @@ void AdamOptimizer::setMatricesToZero()
 
 void AdamOptimizer::initialize(Dimensions weightDims, Dimensions biasDims)
 {
-    *this = AdamOptimizer(beta1, beta2, epsilon);
+    mW = Matrix(weightDims);
+    vW = Matrix(weightDims);
+    mb = Matrix(biasDims);
+    vb = Matrix(biasDims);
+
+    mW.allocateMemory();
+    vW.allocateMemory();
+    mb.allocateMemory();
+    vb.allocateMemory();
+
+    setMatricesToZero();
 }
 
 void AdamOptimizer::updateW(Matrix &dW, Matrix &W, float learning_rate)
@@ -106,3 +107,9 @@ void AdamOptimizer::updateStep(Matrix &dW, Matrix &W, Matrix &db, Matrix &b, flo
 }
 
 void AdamOptimizer::increaseT() { t++; }
+
+float AdamOptimizer::getBeta1() { return beta1; }
+
+float AdamOptimizer::getBeta2() { return beta2; }
+
+float AdamOptimizer::getEpsilon() { return epsilon; }

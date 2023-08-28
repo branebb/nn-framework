@@ -26,31 +26,35 @@
 
 int main()
 {
-    MNIST traindata(128, 200, "datasets/mnist_train.csv");
-    // CoordinatesDataset test(1, 1);
-    std:: cout << "Data prepared successfully!\n";
+    MNIST traindata(32, 1875, "datasets/mnist_train.csv");
 
-    float lambda = 0.0f;
+    float lambda = 0.01f;
     L2 l2(lambda);
+
+    float beta1 = 0.9f;
+    float beta2 = 0.999f;
+    float epsilon = 1e-4f;
+
+    AdamOptimizer adam(beta1, beta2, epsilon);
 
     MSECost MSE(&l2);
 
     Gradient grad;
 
-    float lr = 0.1;
+    float lr = 0.001f;
 
-    NeuralNetwork nn(&MSE, &grad, &l2, lr);
+    NeuralNetwork nn(&MSE, &adam, &l2, lr);
 
-    nn.addLayer(new LinearLayer("linear1", Dimensions(784, 256)));
+    nn.addLayer(new LinearLayer("linear1", Dimensions(784, 128)));
     nn.addLayer(new ReLUActivation("relu"));
-    nn.addLayer(new LinearLayer("linear2", Dimensions(256, 256)));
+    nn.addLayer(new LinearLayer("linear2", Dimensions(128, 64)));
     nn.addLayer(new ReLUActivation("relu"));
-    nn.addLayer(new LinearLayer("linear2", Dimensions(256, 10)));
+    nn.addLayer(new LinearLayer("linear2", Dimensions(64, 10)));
     nn.addLayer(new SoftmaxActivation("softmax"));
 
     Matrix Y;
 
-    for (int epoch = 0; epoch < 21; epoch++) 
+    for (int epoch = 0; epoch < 11; epoch++) 
     {
         float cost = 0.0;
 
@@ -64,9 +68,35 @@ int main()
             cost += MSE.cost(Y, traindata.getTargets().at(batch), layerW);
         }
 
-        if (epoch % 10 == 0) 
+        if (epoch % 1 == 0) 
                 std::cout << "Epoch: " << epoch << ", Cost: " << cost / traindata.getNumOfBatches() << std::endl;
     }
+
+    MNIST testdata(32, 312, "datasets/mnist_test.csv");
+    Matrix A;
+
+    float accuracy = 0.0f;
+    for (int i = 0; i < testdata.getNumOfBatches(); i++)
+    {
+        A = nn.forward(testdata.getBatches().at(i));
+        accuracy += nn.computeAccuracy(A, testdata.getTargets().at(i));
+    }
+    
+    std::cout << "Accuracy on test data: " << accuracy / testdata.getNumOfBatches();
+
+    // Epoch: 0, Cost: 0.273616
+    // Epoch: 1, Cost: 0.243005
+    // Epoch: 2, Cost: 0.222543
+    // Epoch: 3, Cost: 0.207329
+    // Epoch: 4, Cost: 0.18212
+    // Epoch: 5, Cost: 0.176571
+    // Epoch: 6, Cost: 0.153203
+    // Epoch: 7, Cost: 0.149846
+    // Epoch: 8, Cost: 0.140936
+    // Epoch: 9, Cost: 0.134518
+    // Epoch: 10, Cost: 0.129513
+    // Accuracy on test data: 0.88111
+    // Last run on this network with MNIST digits
 
     return 0;
 

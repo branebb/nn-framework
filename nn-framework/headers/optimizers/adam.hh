@@ -22,4 +22,8 @@ public:
     void setMatricesToZero();
 
     void increaseT();
+
+    float getBeta1();
+    float getBeta2();
+    float getEpsilon();
 };
