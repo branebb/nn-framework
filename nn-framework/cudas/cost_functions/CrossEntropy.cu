@@ -13,7 +13,7 @@ __global__ void crossEntropyCost(float* predictions, float* target, int features
         float col_cost = 0.0f;
         for (int row = 0; row < features; row++)
         {
-            float epsilon = 1e-4f; // Small constant to avoid log(0)
+            float epsilon = 1e-7f; // same in keras
             col_cost += (-target[row * data + col] * log(predictions[row * data + col] + epsilon));
         }
 
