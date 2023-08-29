@@ -5,7 +5,7 @@ Welcome to the CUDA Neural Network Framework! This guide will help you set up an
 ## Requirements
 
 Before you start, make sure you have the following prerequisites installed on your system:
-- Editor: You can choose between `Visual Studio Code` or `Microsoft Visual Studio`. While you can use only M`icrosoft Visual Studio`, if you opt for `Visual Studio Code`, please ensure you also have `Microsoft Visual Studio` installed.
+- Editor: You can choose between `Visual Studio Code` or `Microsoft Visual Studio`. While you can use only `Microsoft Visual Studio`, if you opt for `Visual Studio Code`, please ensure you also have `Microsoft Visual Studio` installed.
   
 - CUDA Toolkit: Download and install the `CUDA Toolkit` on your system.
   
