@@ -34,7 +34,7 @@ void L2::gradientRegularization(Matrix& W, Matrix &dW, int size)
 
     applyRegularization<<<num_of_blocks, block_size>>>(dW.deviceData.get(), W.deviceData.get(), lambda, dW.dims.x * dW.dims.y);
     
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 }
 
 float L2::costRegularization(Matrix &W)

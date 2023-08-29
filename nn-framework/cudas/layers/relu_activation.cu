@@ -41,7 +41,7 @@ Matrix& ReLUActivation::forward(Matrix& Z)
 
 	reluActivationForward<<<num_of_blocks, block_size>>>(Z.deviceData.get(), A.deviceData.get(), Z.dims.x, Z.dims.y);
 	
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 
 	return A;
 }
@@ -55,7 +55,7 @@ Matrix& ReLUActivation::backprop(Matrix& dA, float learning_rate)
 
 	reluActivationBackprop<<<num_of_blocks, block_size>>>(Z.deviceData.get(), dA.deviceData.get(), dZ.deviceData.get(), Z.dims.x, Z.dims.y);
 	
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 
 	return dZ;
 }

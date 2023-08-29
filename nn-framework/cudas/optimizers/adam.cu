@@ -46,9 +46,7 @@ AdamOptimizer::AdamOptimizer(float beta1, float beta2, float epsilon):
     beta2(beta2), 
     epsilon(epsilon),
     t(1)
-{ 
-
-}
+{ }
 
 void AdamOptimizer::setMatricesToZero()
 {
@@ -86,7 +84,7 @@ void AdamOptimizer::updateW(Matrix &dW, Matrix &W, float learning_rate)
 
     updateWAdam<<<num_of_blocks, block_size>>>(dW.deviceData.get(), W.deviceData.get(), mW.deviceData.get(), vW.deviceData.get(), beta1, beta2, epsilon, learning_rate, dW.dims.y * dW.dims.x, t);
     
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 }
 
 void AdamOptimizer::updateB(Matrix &db, Matrix &b, float learning_rate)
@@ -96,7 +94,7 @@ void AdamOptimizer::updateB(Matrix &db, Matrix &b, float learning_rate)
 
     updateBAdam<<<num_of_blocks, block_size>>>(db.deviceData.get(), b.deviceData.get(), mb.deviceData.get(), vb.deviceData.get(), beta1, beta2, epsilon, learning_rate, db.dims.y * db.dims.x, t);
 
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 }
 
 void AdamOptimizer::updateStep(Matrix &dW, Matrix &W, Matrix &db, Matrix &b, float learning_rate)

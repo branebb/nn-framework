@@ -37,7 +37,7 @@ void Gradient::updateB(Matrix &db, Matrix &b, float learning_rate)
 
     updateWcuda<<<num_of_blocks, block_size>>>(db.deviceData.get(), b.deviceData.get(), learning_rate, db.dims.y * db.dims.x);
 
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 }
 
 void Gradient::updateStep(Matrix &dW, Matrix &W, Matrix &db, Matrix &b, float learning_rate)

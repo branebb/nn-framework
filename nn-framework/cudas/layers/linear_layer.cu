@@ -95,7 +95,7 @@ LinearLayer::~LinearLayer() {}
 void LinearLayer::initializeWeightsRandomly()
 {
     std::mt19937 rng(std::random_device{}());
-    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+    std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
 
     for (int x = 0; x < W.dims.x; x++)
         for (int y = 0; y < W.dims.y; y++)
@@ -125,7 +125,7 @@ Matrix &LinearLayer::forward(Matrix &A)
 
     computeStoreLayerOutput(A);
 
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 
     return Z;
 }
@@ -160,7 +160,7 @@ Matrix &LinearLayer::backprop(Matrix &dZ, float learning_rate)
     
     optimizer->updateStep(dW, W, db, b, learning_rate);
     
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 
     return dA;
 }
@@ -172,7 +172,7 @@ void LinearLayer::computeStoreBackpropError(Matrix &dZ)
 
     linearLayerBackprop<<<num_of_blocks, block_size>>>(W.deviceData.get(), dZ.deviceData.get(), dA.deviceData.get(), W.dims.x, W.dims.y, dZ.dims.x, dZ.dims.y);
 
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 }
 
 void LinearLayer::computeStoreWGradient(Matrix &dZ)
@@ -182,7 +182,7 @@ void LinearLayer::computeStoreWGradient(Matrix &dZ)
 
     linearLayerCalculateWGradient<<<num_of_blocks, block_size>>>(dZ.deviceData.get(), A.deviceData.get(), dW.deviceData.get(), dZ.dims.x, dZ.dims.y, A.dims.x, A.dims.y);
 
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 }
 
 void LinearLayer::computeStoreBGradient(Matrix &dZ)
@@ -192,7 +192,7 @@ void LinearLayer::computeStoreBGradient(Matrix &dZ)
 
     linearLayerCalculateBGradient<<<num_of_blocks, block_size>>>(dZ.deviceData.get(), db.deviceData.get(), dZ.dims.x, dZ.dims.y, b.dims.x);
 
-    cuda_check(cudaDeviceSynchronize());
+    // cuda_check(cudaDeviceSynchronize());
 }
 
 int LinearLayer::getXDim() const { return W.dims.x; }
