@@ -195,7 +195,7 @@ To assess the performance of the `CUDA Neural Network Framework`, a benchmark co
 The results of the benchmark revealed that the network trained using the `CUDA Neural Network Framework` achieved an accuracy of `96%` on the test dataset. Remarkably, when the same architecture and training process were applied to the PyTorch implementation, an identical accuracy of `96%` was obtained on the test data. This benchmark underscores the capability and accuracy of the `CUDA Neural Network Framework`, aligning its performance with established deep learning libraries.
 
 ## Contributing
-Feel free to download and experiment with the CUDA Neural Network Framework for your personal use. However, please note that this project is an ongoing work, and I'll be actively developing it further. As a result, I won't be accepting pull requests for general changes or enhancements at this time.
+Feel free to download and experiment with the `CUDA Neural Network Framework` for your personal use. However, please note that this project is an ongoing work, and I'll be actively developing it further. As a result, I won't be accepting pull requests for general changes or enhancements at this time.
 
-If you encounter any issues while using the framework or have suggestions for improvement, please don't hesitate to open an issue in the repository. Your feedback is valuable and will contribute to the project's growth. Thank you for your interest in the CUDA Neural Network Framework!
+If you encounter any issues while using the framework or have suggestions for improvement, please don't hesitate to open an issue in the repository. Your feedback is valuable and will contribute to the project's growth. Thank you for your interest in the `CUDA Neural Network Framework`!
 
