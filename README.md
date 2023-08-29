@@ -135,22 +135,25 @@ L_{\text{regularized}} = L_{\text{original}} + \frac{\lambda}{2} \sum_{w} w^2
 ### Initialization and Configuration
 Start by initializing the necessary components for your neural network, including data loading, regularization, cost function, optimizer, learning rate, and architecture.
 ```cpp
-MNIST traindata(32, 1875, "datasets/mnist_train.csv");
-
 float lambda = 0.00f;
-L2 l2(lambda);
 
 float beta1 = 0.9f;
 float beta2 = 0.999f;
 float epsilon = 1e-8f;
 
-CrossEntropyCost ce(&l2);
+float learning_rate = 0.01f;
+
+MNIST traindata(32, 1875, "datasets/mnist_train.csv");
+
+L2 L2(lambda);
+
+CrossEntropyCost crossEntropy(&L2);
 
 AdamOptimizer adam(beta1, beta2, epsilon);
 
-float lr = 0.01f;
+MSECost MSE(&L2);
 
-NeuralNetwork nn(&ce, &adam, &l2, lr);
+NeuralNetwork nn(&crossEntropy, &adam, &L2, learning_rate);
 ```
 
 
@@ -161,12 +164,37 @@ The process of building a neural network involves defining its architecture by s
 nn.addLayer(new LinearLayer("linear1", Dimensions(784, 128)));
 nn.addLayer(new ReLUActivation("relu"));
 nn.addLayer(new LinearLayer("linear2", Dimensions(128, 64)));
-nn.addLayer(new ReLUActivation("relu"));
+nn.addLayer(new ReLUActivation("relu2"));
 nn.addLayer(new LinearLayer("linear3", Dimensions(64, 10)));
 nn.addLayer(new SoftmaxActivation("softmax"));
 ```
 
 Construct the neural network by starting with 784 input nodes, transforming them through hidden layers with Linear and ReLU activations to 128 and 64 nodes, and finally producing class probabilities using a Softmax activation on 10 output nodes for MNIST classification.
+
+#### Training the Neural Network
+Train the neural network using the provided architecture and dataset, iterating over epochs and batches. During each iteration, perform forward and backward passes to update the network's weights, while monitoring the cost.
+
+```cpp
+Matrix Y;
+
+for (int epoch = 0; epoch < 11; epoch++) 
+{
+  float cost = 0.0;
+
+  for (int batch = 0; batch < traindata.getNumOfBatches(); batch++) 
+  {
+    Y = nn.forward(traindata.getBatches().at(batch));
+    nn.backprop(Y, traindata.getTargets().at(batch));
+
+    LinearLayer* linearLayer = dynamic_cast<LinearLayer*>(nn.getLayers()[2]);
+    Matrix layerW = linearLayer->getWeightsMatrix();
+    cost += crossEntropy.cost(Y, traindata.getTargets().at(batch), layerW);
+  }
+
+  if (epoch % 1 == 0) 
+    std::cout << "Epoch: " << epoch << ", Cost: " << cost / traindata.getNumOfBatches() << std::endl;
+}
+```
 
 #### Evaluating on Test Data
 Evaluate the trained neural network on the test data:
@@ -197,5 +225,5 @@ The results of the benchmark revealed that the network trained using the `CUDA N
 ## Contributing
 Feel free to download and experiment with the `CUDA Neural Network Framework` for your personal use. However, please note that this project is an ongoing work, and I'll be actively developing it further. As a result, I won't be accepting pull requests for general changes or enhancements at this time.
 
-If you encounter any issues while using the framework or have suggestions for improvement, please don't hesitate to open an issue in the repository. Your feedback is valuable and will contribute to the project's growth. Thank you for your interest in the `CUDA Neural Network Framework`!
+If you encounter any issues while using the framework or have suggestions for improvement, please don't hesitate to open an issue in the repository. Your feedback is valuable and will contribute to the project's growth. Thank you for your interest in the `CUDA Neural Network Framework`.
 
