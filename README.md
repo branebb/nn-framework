@@ -184,11 +184,11 @@ for (int epoch = 0; epoch < 11; epoch++)
   for (int batch = 0; batch < traindata.getNumOfBatches(); batch++) 
   {
     Y = nn.forward(traindata.getBatches().at(batch));
-      nn.backprop(Y, traindata.getTargets().at(batch));
+    nn.backprop(Y, traindata.getTargets().at(batch));
         
-      LinearLayer* linearLayer = dynamic_cast<LinearLayer*>(nn.getLayers()[2]);
-      Matrix layerW = linearLayer->getWeightsMatrix();
-      cost += crossEntropy.cost(Y, traindata.getTargets().at(batch), layerW);
+    LinearLayer* linearLayer = dynamic_cast<LinearLayer*>(nn.getLayers()[2]);
+    Matrix layerW = linearLayer->getWeightsMatrix();
+    cost += crossEntropy.cost(Y, traindata.getTargets().at(batch), layerW);
   }
 
   if (epoch % 1 == 0) 
