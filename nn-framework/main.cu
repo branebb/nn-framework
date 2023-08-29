@@ -49,8 +49,8 @@ int main()
     nn.addLayer(new LinearLayer("linear1", Dimensions(784, 128)));
     nn.addLayer(new ReLUActivation("relu"));
     nn.addLayer(new LinearLayer("linear2", Dimensions(128, 64)));
-    nn.addLayer(new ReLUActivation("relu"));
-    nn.addLayer(new LinearLayer("linear2", Dimensions(64, 10)));
+    nn.addLayer(new ReLUActivation("relu2"));
+    nn.addLayer(new LinearLayer("linear3", Dimensions(64, 10)));
     nn.addLayer(new SoftmaxActivation("softmax"));
 
     Matrix Y;
