@@ -1,9 +1,6 @@
 #pragma once
 
-// Custom dimensions header
 #include "dimensions.hh"
-
-// Header for shared pointer
 #include <memory>
 
 class Matrix 

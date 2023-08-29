@@ -34,5 +34,4 @@ public:
 	std::vector<NNLayer*> getLayers() const;
 
 	float computeAccuracy(Matrix& predictions, Matrix& targets);
-
 };

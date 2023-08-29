@@ -1,7 +1,6 @@
 // Standard library
 #include <iostream>
 #include <stdio.h>
-#include <time.h>
 
 // Nvidia
 #include <driver_types.h>
@@ -22,31 +21,30 @@
 #include "nn-framework/headers/optimizers/gradient.hh"
 #include "nn-framework/headers/optimizers/adam.hh"
 #include "nn-framework/headers/regularization/L2.hh"
-#include "nn-framework/mnist.hh"
+#include "nn-framework/mnist/mnist.hh"
 #include "nn-framework/headers/cost_functions/CrossEntropy.hh"
 
 int main()
 {
-    MNIST traindata(32, 1875, "datasets/mnist_train.csv");
-
     float lambda = 0.00f;
-    L2 l2(lambda);
 
     float beta1 = 0.9f;
     float beta2 = 0.999f;
     float epsilon = 1e-8f;
 
-    CrossEntropyCost ce(&l2);
+    float learning_rate = 0.01f;
+
+    MNIST traindata(32, 1875, "datasets/mnist_train.csv");
+
+    L2 L2(lambda);
+
+    CrossEntropyCost crossEntropy(&L2);
 
     AdamOptimizer adam(beta1, beta2, epsilon);
 
-    MSECost MSE(&l2);
+    MSECost MSE(&L2);
 
-    Gradient grad;
-
-    float lr = 0.01f;
-
-    NeuralNetwork nn(&ce, &adam, &l2, lr);
+    NeuralNetwork nn(&crossEntropy, &adam, &L2, learning_rate);
 
     nn.addLayer(new LinearLayer("linear1", Dimensions(784, 128)));
     nn.addLayer(new ReLUActivation("relu"));
@@ -68,7 +66,7 @@ int main()
         
             LinearLayer* linearLayer = dynamic_cast<LinearLayer*>(nn.getLayers()[2]);
             Matrix layerW = linearLayer->getWeightsMatrix();
-            cost += ce.cost(Y, traindata.getTargets().at(batch), layerW);
+            cost += crossEntropy.cost(Y, traindata.getTargets().at(batch), layerW);
         }
 
         if (epoch % 1 == 0) 
@@ -87,20 +85,5 @@ int main()
     
     std::cout << "Accuracy on test data: " << accuracy / testdata.getNumOfBatches();
 
-    // Epoch: 0, Cost: 2.41148
-    // Epoch: 1, Cost: 1.11779
-    // Epoch: 2, Cost: 0.799951
-    // Epoch: 3, Cost: 0.541452
-    // Epoch: 4, Cost: 0.476145
-    // Epoch: 5, Cost: 0.370254
-    // Epoch: 6, Cost: 0.349535
-    // Epoch: 7, Cost: 0.306472
-    // Epoch: 8, Cost: 0.286702
-    // Epoch: 9, Cost: 0.245
-    // Epoch: 10, Cost: 0.233779
-    // Accuracy on test data: 0.961639
-    // Last run on this network with MNIST digits
-
     return 0;
-
 }

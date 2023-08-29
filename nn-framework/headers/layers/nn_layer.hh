@@ -15,7 +15,6 @@ public:
 	virtual Matrix& backprop(Matrix& dZ, float learning_rate) = 0;
 
 	std::string getName() { return this->name; };
-
 };
 
 inline NNLayer::~NNLayer() {}

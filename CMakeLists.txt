@@ -9,10 +9,7 @@ set(CMAKE_CUDA_STANDARD 14)
 if(MSVC)
     set(_CRT_SECURE_NO_WARNINGS 1)
     set(CURL_STATICLIB 1)
-     # 8 MB stack size
 endif()
-
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:41943040")
 
 include_directories(
     /
@@ -36,7 +33,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     nn-framework/cudas/optimizers/gradient.cu
     nn-framework/cudas/optimizers/adam.cu
     nn-framework/cudas/regularization/L2.cu
-    nn-framework/mnist.cu
+    nn-framework/mnist/mnist.cu
     nn-framework/cudas/cost_functions/CrossEntropy.cu
 )
 
