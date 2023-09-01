@@ -43,7 +43,7 @@ In the context of neural networks, layers play a crucial role in defining the ar
 The `Linear Layer`, also known as a `Fully Connected Layer`, connects each input neuron to every neuron in the following layer. It performs a linear transformation of the input data.
 
 ```math
-Z = A \cdot W + b
+Z = W \cdot A + b
 ```
 
 This formula computes the weighted sum of the input matrix `A` with the weight matrix `W`, and adds the bias vector `b`. The resulting matrix `Z` forms the input for the subsequent activation layer. 
