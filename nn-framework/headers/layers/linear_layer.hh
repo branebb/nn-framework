@@ -20,8 +20,6 @@ private:
 	void computeStoreLayerOutput(Matrix& A);
 	void computeStoreWGradient(Matrix& dZ);
 	void computeStoreBGradient(Matrix& dZ);
-	void updateWeights(Matrix& dZ, float learning_rate);
-	void updateBias(Matrix& dZ, float learning_rate);
 
 public:
     LinearLayer(std::string name, Dimensions W_dims);

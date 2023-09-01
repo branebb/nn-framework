@@ -15,7 +15,6 @@
 #include "nn-framework/headers/layers/relu_activation.hh"
 #include "nn-framework/headers/layers/sigmoid_activation.hh"
 #include "nn-framework/headers/structures/matrix.hh"
-#include "nn-framework/coordinates_test.hh"
 #include "nn-framework/headers/layers/softmax_activation.hh"
 #include "nn-framework/headers/optimizers/optimizer.hh"
 #include "nn-framework/headers/optimizers/gradient.hh"

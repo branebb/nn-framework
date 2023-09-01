@@ -7,7 +7,7 @@ __global__ void applyRegularization(float *dW, float *W, float lambda, int size)
 
     if (idx < size)
     {
-        dW[idx] += lambda * W[idx];
+        dW[idx] += (lambda / size) * W[idx];
     }
 }
 
