@@ -1,5 +1,7 @@
 # CUDA Neural network framework
 
+<div align="justify">
+
 Welcome to the CUDA Neural Network Framework! This guide will help you set up and run the framework on your Windows system. Please follow the instructions below to ensure a smooth experience.
 
 ## Requirements
@@ -227,3 +229,4 @@ Feel free to download and experiment with the `CUDA Neural Network Framework` fo
 
 If you encounter any issues while using the framework or have suggestions for improvement, please don't hesitate to open an issue in the repository. Your feedback is valuable and will contribute to the project's growth. Thank you for your interest in the `CUDA Neural Network Framework`.
 
+</div>
