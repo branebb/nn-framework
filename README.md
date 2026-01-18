@@ -1,13 +1,14 @@
-# CUDA Neural network framework
+# CUDA Neural Network Framework
 
 <div align="justify">
 
-Welcome to the CUDA Neural Network Framework! This guide will help you set up and run the framework on your Windows system. Please follow the instructions below to ensure a smooth experience.
+Welcome to the CUDA Neural Network Framework, a C++ and CUDA-based framework for building and training neural networks on the GPU. This README provides an overview of the framework, its components, and instructions for building and running the project on Windows.
 
 ## Requirements
 
 Before you start, make sure you have the following prerequisites installed on your system:
-- Editor: You can choose between `Visual Studio Code` or `Microsoft Visual Studio`. While you can use only `Microsoft Visual Studio`, if you opt for `Visual Studio Code`, please ensure you also have `Microsoft Visual Studio` installed.
+- Editor: You can choose between `Visual Studio Code` or `Microsoft Visual Studio`. While the project can be built using only `Microsoft Visual Studio`, if you choose to use `Visual Studio Code`, you must also have `Microsoft Visual Studio` installed.
+
   
 - CUDA Toolkit: Download and install the `CUDA Toolkit` on your system.
   
@@ -83,7 +84,7 @@ The `Softmax activation` function is used in the output layer of neural networks
 
 ### Cost Functions
 #### Cross-Entropy (CE)
-`Cross-Entropy (CE`) is a versatile loss function used extensively in classification tasks. It measures the dissimilarity between predicted class probabilities and the true class labels. `CE` encourages the model to assign higher probabilities to the correct classes, driving accurate predictions.
+`Cross-Entropy (CE)` is a versatile loss function used extensively in classification tasks. It measures the dissimilarity between predicted class probabilities and the true class labels. `CE` encourages the model to assign higher probabilities to the correct classes, driving accurate predictions.
 
 For a dataset with `m` training examples and `K` classes, the Cross-Entropy cost `L` can be calculated as:
 
@@ -220,12 +221,14 @@ This code computes the accuracy of your trained model on the test data.
 By following the usage instructions provided, you can train and evaluate a neural network using the `CUDA Neural Network Framework`. Customize the architecture and parameters to suit your specific problem and achieve accurate results.
 
 ## Benchmark
+To validate the correctness and performance of the CUDA Neural Network Framework, a benchmark comparison was conducted against PyTorch.
+
 To assess the performance of the `CUDA Neural Network Framework`, a benchmark comparison was conducted. The neural network architecture created using this framework was replicated in `PyTorch`, with the same layers, activations, cost functions, optimizers, and hyperparameters. The network was trained on the `MNIST dataset` using identical settings in both frameworks.
 
 The results of the benchmark revealed that the network trained using the `CUDA Neural Network Framework` achieved an accuracy of `96%` on the test dataset. Remarkably, when the same architecture and training process were applied to the PyTorch implementation, an identical accuracy of `96%` was obtained on the test data. This benchmark underscores the capability and accuracy of the `CUDA Neural Network Framework`, aligning its performance with established deep learning libraries.
 
 ## Contributing
-Feel free to download and experiment with the `CUDA Neural Network Framework` for your personal use. However, please note that this project is an ongoing work, and I'll be actively developing it further. As a result, I won't be accepting pull requests for general changes or enhancements at this time.
+Feel free to download and experiment with the `CUDA Neural Network Framework` for your personal use. However, please note that this project is still under active development. As a result, I won't be accepting pull requests for general changes or enhancements at this time.
 
 If you encounter any issues while using the framework or have suggestions for improvement, please don't hesitate to open an issue in the repository. Your feedback is valuable and will contribute to the project's growth. Thank you for your interest in the `CUDA Neural Network Framework`.
 
